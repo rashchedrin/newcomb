@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Newcomb's Two Envelopes — Mobile</title>
+  <title>Newcomb's Paradox - AI Prediction Experiment</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -156,8 +156,8 @@
   <div class="container">
     <div class="row row-top">
       <div class="score">Total Score <span id="scoreValue" class="value">$0</span></div>
-      <button id="btnOneBox" class="btn btn-primary" type="button" title="Predict one-box when visible; collect A on tap">Take only A (one-box)</button>
-      <div class="helper-text">Scroll to choose: when this button is visible, the predictor fills A. <a href="index.html" style="color: var(--accent); text-decoration: none;">Desktop version</a></div>
+      <button id="btnOneBox" class="btn btn-primary" type="button">Take only Envelope A</button>
+      <div class="helper-text">The AI system continuously analyzes your position and intent. <a href="index.html" style="color: var(--accent); text-decoration: none;">Desktop version</a></div>
     </div>
 
     <div class="row row-middle">
@@ -165,7 +165,7 @@
         <div class="envelope" aria-live="polite">
           <h2>Envelope A</h2>
           <div id="amountA" class="amount">$0</div>
-          <div class="note">Predictor puts $1,000,000 here if it predicts you will take only A.</div>
+          <div class="note">Contains $1,000,000 if the AI system predicts you will choose only this envelope.</div>
         </div>
         <div class="envelope" aria-live="polite">
           <h2>Envelope B</h2>
@@ -176,12 +176,12 @@
     </div>
 
     <div class="row row-bottom">
-      <button id="btnTwoBox" class="btn btn-warn" type="button" title="Predict two-box when visible; collect A+B on tap">Take A and B (two-box)</button>
-      <div class="helper-text">When this button is visible, the predictor empties A.</div>
+      <button id="btnTwoBox" class="btn btn-warn" type="button">Take both Envelopes</button>
+      <div class="helper-text">The AI has made its prediction based on your behavioral patterns.</div>
     </div>
 
     <div class="row row-next">
-      <button id="btnNext" class="btn" type="button" title="Start a new round">Next round</button>
+      <button id="btnNext" class="btn" type="button">New Experiment</button>
     </div>
   </div>
 

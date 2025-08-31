@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Newcomb's Two Envelopes</title>
+  <title>Newcomb's Paradox - AI Prediction Experiment</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -180,7 +180,7 @@
   <div class="container">
     <div class="header">
       <div class="title">
-        <h1>Newcomb's Two Envelopes</h1>
+        <h1>Newcomb's Paradox</h1>
       </div>
       <div class="score">
         <div class="label">Total Score</div>
@@ -193,7 +193,7 @@
         <div class="envelope" aria-live="polite">
           <h2>Envelope A</h2>
           <div id="amountA" class="amount">$0</div>
-          <div class="note">Predictor puts $1,000,000 here if it predicts you will take only A.</div>
+          <div class="note">Contains $1,000,000 if the AI system predicts you will choose only this envelope.</div>
         </div>
         <div class="envelope" aria-live="polite">
           <h2>Envelope B</h2>
@@ -203,13 +203,13 @@
       </div>
 
       <div class="actions">
-        <button id="btnOneBox" class="btn btn-primary" type="button" title="Predict one-box on hover; collect A on click">Take only A (one-box)</button>
-        <button id="btnTwoBox" class="btn btn-warn" type="button" title="Predict two-box on hover; collect A+B on click">Take A and B (two-box)</button>
-        <button id="btnNext" class="btn" type="button" title="Start a new round">Next round</button>
+        <button id="btnOneBox" class="btn btn-primary" type="button">Take only Envelope A</button>
+        <button id="btnTwoBox" class="btn btn-warn" type="button">Take both Envelopes</button>
+        <button id="btnNext" class="btn" type="button">New Experiment</button>
       </div>
 
       <div class="helper-text">
-        Hovering a choice tells the predictor your intent and rearranges Envelope A accordingly. Clicking awards the money shown. After a round is awarded, start a new round.
+        An advanced AI system has analyzed your behavior patterns and made its prediction. Choose wisely - the contents of Envelope A depend on what the AI believes you will do.
       </div>
     </div>
   </div>
@@ -218,16 +218,13 @@
     "use strict";
 
     /**
-     * Detect if user is on a mobile device.
+     * Detect if user has a touchscreen device.
      * @returns {boolean}
      * side-effects: none
      */
     function isMobileDevice() {
-      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-      const mobileRegex = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i;
       const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-      const isSmallScreen = window.innerWidth <= 768;
-      return mobileRegex.test(userAgent) || (hasTouch && isSmallScreen);
+      return hasTouch;
     }
 
     /**
