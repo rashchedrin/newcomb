@@ -218,6 +218,31 @@
     "use strict";
 
     /**
+     * Detect if user is on a mobile device.
+     * @returns {boolean}
+     * side-effects: none
+     */
+    function isMobileDevice() {
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+      const mobileRegex = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i;
+      const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+      const isSmallScreen = window.innerWidth <= 768;
+      return mobileRegex.test(userAgent) || (hasTouch && isSmallScreen);
+    }
+
+    /**
+     * Redirect mobile users to mobile.html if not already there.
+     * @returns {void}
+     * side-effects: may change window.location
+     */
+    function redirectMobileUsers() {
+      if (isMobileDevice() && !window.location.pathname.includes('mobile.html')) {
+        window.location.href = 'mobile.html';
+        return;
+      }
+    }
+
+    /**
      * Fail-fast assertion.
      * @param {boolean} condition - Condition that is expected to be true.
      * @param {string} expected - Description of the expected state/value.
@@ -386,6 +411,9 @@
 
     // Initialize
     (function init() {
+      // Redirect mobile users to mobile.html first
+      redirectMobileUsers();
+      
       // Loop invariants: buttons are queried exactly once; handlers do not stack.
       const btnOne = document.getElementById("btnOneBox");
       const btnTwo = document.getElementById("btnTwoBox");
