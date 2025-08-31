@@ -45,13 +45,21 @@
     .row:last-child {
       border-bottom: 0;
     }
-    .row-top, .row-bottom, .row-next {
+    .row-top {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       gap: 8px;
       min-height: 120px;
+    }
+    .row-bottom, .row-next {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 80px;
     }
     .score {
       font-size: 14px;
