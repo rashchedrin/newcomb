@@ -150,6 +150,37 @@
       line-height: 1.4;
       text-align: center;
     }
+    .scroll-hint {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      opacity: 0.7;
+      animation: pulse 2s infinite;
+    }
+    .scroll-arrows {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    .arrow {
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-top: 8px solid var(--muted);
+    }
+    .scroll-text {
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.3px;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 0.4; }
+    }
   </style>
 </head>
 <body>
@@ -158,6 +189,14 @@
       <div class="score">Total Score <span id="scoreValue" class="value">$0</span></div>
       <button id="btnOneBox" class="btn btn-primary" type="button">Take only Envelope A</button>
       <div class="helper-text">The AI system continuously analyzes your behavioral patterns and intent. <a href="index.html" style="color: var(--accent); text-decoration: none;">Desktop version</a></div>
+      <div class="scroll-hint">
+        <div class="scroll-arrows">
+          <div class="arrow"></div>
+          <div class="arrow"></div>
+          <div class="arrow"></div>
+        </div>
+        <div class="scroll-text">SCROLL TO EXPLORE</div>
+      </div>
     </div>
 
     <div class="row row-middle">
@@ -396,6 +435,18 @@
     }
 
     /**
+     * Hide the scroll hint after user starts scrolling.
+     * @returns {void}
+     * side-effects: updates DOM visibility
+     */
+    function hideScrollHint() {
+      const scrollHint = document.querySelector(".scroll-hint");
+      if (scrollHint && scrollHint.style.display !== "none") {
+        scrollHint.style.display = "none";
+      }
+    }
+
+    /**
      * Start a new round. Predictor follows current visibility on screen.
      * @returns {void}
      * side-effects: updates globals and DOM, enables buttons
@@ -405,6 +456,11 @@
       g_currentPrediction = null;
       setButtonsDisabled(false);
       updatePredictorFromScroll();
+      // Show scroll hint again for new round
+      const scrollHint = document.querySelector(".scroll-hint");
+      if (scrollHint) {
+        scrollHint.style.display = "flex";
+      }
     }
 
     // Initialize
@@ -425,7 +481,10 @@
       btnNext.addEventListener("click", function handleClickNext() { resetRound(); });
 
       // Scroll/resize change predictor
-      window.addEventListener("scroll", function handleScroll() { updatePredictorFromScroll(); }, { passive: true });
+      window.addEventListener("scroll", function handleScroll() { 
+        updatePredictorFromScroll(); 
+        hideScrollHint();
+      }, { passive: true });
       window.addEventListener("resize", function handleResize() { updatePredictorFromScroll(); });
 
       // Initial state: set predictor based on initial visibility
