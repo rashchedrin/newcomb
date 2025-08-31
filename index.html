@@ -181,7 +181,6 @@
     <div class="header">
       <div class="title">
         <h1>Newcomb's Two Envelopes</h1>
-        <p class="subtitle">Hover predicts; click collects. Envelopes and contents are always visible.</p>
       </div>
       <div class="score">
         <div class="label">Total Score</div>
@@ -192,12 +191,12 @@
     <div class="play-area">
       <div class="envelopes">
         <div class="envelope" aria-live="polite">
-          <h2>Envelope A (opaque)</h2>
+          <h2>Envelope A</h2>
           <div id="amountA" class="amount">$0</div>
           <div class="note">Predictor puts $1,000,000 here if it predicts you will take only A.</div>
         </div>
         <div class="envelope" aria-live="polite">
-          <h2>Envelope B (transparent)</h2>
+          <h2>Envelope B</h2>
           <div id="amountB" class="amount">$1,000</div>
           <div class="note">Always contains $1,000.</div>
         </div>
@@ -374,17 +373,15 @@
     }
 
     /**
-     * Start a new round. Resets envelopes to default state (A=$0, B=$1,000).
+     * Start a new round. Defaults predictor to "one" (A=$1,000,000; B=$1,000).
      * @returns {void}
      * side-effects: updates globals and DOM, enables buttons
      */
     function resetRound() {
       g_roundLocked = false;
       g_currentPrediction = null;
-      /** @type {[number, number]} */
-      g_envelopeAmounts = [0, THOUSAND_AMOUNT];
-      renderEnvelopeAmounts();
       setButtonsDisabled(false);
+      setPredictorState("one");
     }
 
     // Initialize
@@ -408,8 +405,8 @@
       // Next round
       btnNext.addEventListener("click", function handleClickNext() { resetRound(); });
 
-      // Initial render
-      renderEnvelopeAmounts();
+      // Initial state: default predict one-box
+      setPredictorState("one");
       renderScore();
     })();
   </script>
