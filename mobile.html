@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Newcomb's Two Envelopes — Mobile</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --accent: #06b6d4;
+      --accent-2: #f59e0b;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --good: #10b981;
+      --bad: #ef4444;
+      --shadow: rgba(0,0,0,0.35);
+    }
+    html, body {
+      height: 100%;
+    }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 20% 0%, #0b1225 0%, var(--bg) 55%);
+      color: var(--text);
+      display: block;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+    .container {
+      width: 100%;
+      max-width: 640px;
+      margin: 0 auto;
+      background: linear-gradient(180deg, #0b1222, #0c1220 60%, #0a101b);
+      border: 1px solid #1f2937;
+      border-radius: 14px;
+      box-shadow: 0 20px 60px var(--shadow);
+      padding: 12px;
+    }
+    .row {
+      border-bottom: 1px solid #1f2937;
+      padding: 10px 8px;
+    }
+    .row:last-child {
+      border-bottom: 0;
+    }
+    .row-top, .row-bottom, .row-next {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 120px;
+    }
+    .score {
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .score .value {
+      font-weight: 800;
+      color: var(--good);
+      margin-left: 6px;
+    }
+    .row-middle {
+      height: 120vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .envelopes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      width: 100%;
+    }
+    .envelope {
+      background: linear-gradient(180deg, #0f172a, #0e1627);
+      border: 1px solid #1f2937;
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+    }
+    .envelope h2 {
+      margin: 0 0 8px 0;
+      font-size: 15px;
+      letter-spacing: 0.2px;
+      color: #d1d5db;
+      text-align: center;
+    }
+    .envelope .amount {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      color: #f3f4f6;
+      text-align: center;
+    }
+    .envelope .note {
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+    }
+    .btn {
+      background: linear-gradient(180deg, #0b1720, #0a141c);
+      color: var(--text);
+      border: 1px solid #1f2937;
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-weight: 800;
+      font-size: 16px;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      box-shadow: 0 6px 20px var(--shadow);
+      transition: transform 120ms ease, background 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+      user-select: none;
+      width: 100%;
+      max-width: 480px;
+    }
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: #334155;
+      background: linear-gradient(180deg, #0d1b26, #0b1621);
+      box-shadow: 0 10px 26px var(--shadow);
+    }
+    .btn[disabled] {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    .btn-primary {
+      border-color: rgba(6, 182, 212, 0.4);
+    }
+    .btn-primary:hover {
+      border-color: var(--accent);
+      box-shadow: 0 10px 26px rgba(6, 182, 212, 0.25);
+    }
+    .btn-warn {
+      border-color: rgba(245, 158, 11, 0.35);
+    }
+    .btn-warn:hover {
+      border-color: var(--accent-2);
+      box-shadow: 0 10px 26px rgba(245, 158, 11, 0.25);
+    }
+    .helper-text {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="row row-top">
+      <div class="score">Total Score <span id="scoreValue" class="value">$0</span></div>
+      <button id="btnOneBox" class="btn btn-primary" type="button" title="Predict one-box when visible; collect A on tap">Take only A (one-box)</button>
+      <div class="helper-text">Scroll to choose: when this button is visible, the predictor fills A.</div>
+    </div>
+
+    <div class="row row-middle">
+      <div class="envelopes">
+        <div class="envelope" aria-live="polite">
+          <h2>Envelope A</h2>
+          <div id="amountA" class="amount">$0</div>
+          <div class="note">Predictor puts $1,000,000 here if it predicts you will take only A.</div>
+        </div>
+        <div class="envelope" aria-live="polite">
+          <h2>Envelope B</h2>
+          <div id="amountB" class="amount">$1,000</div>
+          <div class="note">Always contains $1,000.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row row-bottom">
+      <button id="btnTwoBox" class="btn btn-warn" type="button" title="Predict two-box when visible; collect A+B on tap">Take A and B (two-box)</button>
+      <div class="helper-text">When this button is visible, the predictor empties A.</div>
+    </div>
+
+    <div class="row row-next">
+      <button id="btnNext" class="btn" type="button" title="Start a new round">Next round</button>
+    </div>
+  </div>
+
+  <script>
+    "use strict";
+
+    /**
+     * Fail-fast assertion.
+     * @param {boolean} condition - Condition that is expected to be true.
+     * @param {string} expected - Description of the expected state/value.
+     * @param {string} actual - Description of the actual state/value.
+     * @returns {void}
+     * side-effects: none
+     */
+    function assert(condition, expected, actual) {
+      if (!condition) {
+        throw new Error("Assertion failed: expected " + expected + ", got " + actual);
+      }
+    }
+
+    /** @type {number} */
+    const MILLION_AMOUNT = 1000000;
+    /** @type {number} */
+    const THOUSAND_AMOUNT = 1000;
+
+    /** @type {boolean} */
+    let g_roundLocked = false;
+    /** @type {number} */
+    let g_score = 0;
+    /** @type {"one"|"two"|null} */
+    let g_currentPrediction = null;
+    /**
+     * Envelope amounts tuple [A, B].
+     * @type {[number, number]} - Tuple shape [2]
+     */
+    let g_envelopeAmounts = [0, THOUSAND_AMOUNT];
+
+    /**
+     * Convert a number to currency string.
+     * @param {number} amount - Non-negative integer amount in dollars.
+     * @returns {string}
+     * side-effects: none
+     */
+    function formatCurrency(amount) {
+      assert(Number.isFinite(amount) && amount >= 0,
+        "amount to be non-negative finite number", String(amount));
+      return "$" + amount.toLocaleString("en-US");
+    }
+
+    /**
+     * Get references to envelope amount elements.
+     * @returns {[HTMLElement, HTMLElement]} - Tuple shape [2]
+     * side-effects: none
+     */
+    function getEnvelopeAmountElements() {
+      const elementA = document.getElementById("amountA");
+      const elementB = document.getElementById("amountB");
+      assert(elementA instanceof HTMLElement, "elementA to be HTMLElement", String(elementA));
+      assert(elementB instanceof HTMLElement, "elementB to be HTMLElement", String(elementB));
+      return [elementA, elementB];
+    }
+
+    /**
+     * Update the envelope DOM to reflect g_envelopeAmounts.
+     * @returns {void}
+     * side-effects: updates DOM textContent
+     */
+    function renderEnvelopeAmounts() {
+      const [elementA, elementB] = getEnvelopeAmountElements();
+      const [amountA, amountB] = g_envelopeAmounts;
+      assert(Array.isArray(g_envelopeAmounts) && g_envelopeAmounts.length === 2,
+        "g_envelopeAmounts length 2", JSON.stringify(g_envelopeAmounts));
+      assert(Number.isFinite(amountA) && amountA >= 0, "A >= 0 number", String(amountA));
+      assert(Number.isFinite(amountB) && amountB >= 0, "B >= 0 number", String(amountB));
+      elementA.textContent = formatCurrency(amountA);
+      elementB.textContent = formatCurrency(amountB);
+    }
+
+    /**
+     * Update the score display.
+     * @returns {void}
+     * side-effects: updates DOM textContent
+     */
+    function renderScore() {
+      const scoreElement = document.getElementById("scoreValue");
+      assert(scoreElement instanceof HTMLElement, "scoreElement HTMLElement", String(scoreElement));
+      assert(Number.isFinite(g_score) && g_score >= 0, "g_score >= 0 number", String(g_score));
+      scoreElement.textContent = formatCurrency(g_score);
+    }
+
+    /**
+     * Set prediction and rearrange envelope contents accordingly.
+     * - If prediction is "one": A gets $1,000,000; B stays $1,000.
+     * - If prediction is "two": A gets $0; B stays $1,000.
+     * @param {"one"|"two"} prediction - The predictor's current forecast.
+     * @returns {void}
+     * side-effects: reads/updates globals and DOM
+     */
+    function setPredictorState(prediction) {
+      assert(prediction === "one" || prediction === "two", "prediction one|two", String(prediction));
+      if (g_roundLocked) {
+        return;
+      }
+      g_currentPrediction = prediction;
+      const amountA = prediction === "one" ? MILLION_AMOUNT : 0;
+      const amountB = THOUSAND_AMOUNT;
+      /** @type {[number, number]} */
+      g_envelopeAmounts = [amountA, amountB];
+      renderEnvelopeAmounts();
+    }
+
+    /**
+     * Determine if any part of element is visible in the viewport.
+     * @param {Element} element - DOM element to test.
+     * @returns {boolean}
+     * side-effects: none
+     */
+    function isElementVisible(element) {
+      assert(element instanceof Element, "element to be Element", String(element));
+      const rect = element.getBoundingClientRect();
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+      const viewportWidth = window.innerWidth || document.documentElement.clientWidth;
+      return (
+        rect.bottom > 0 &&
+        rect.right > 0 &&
+        rect.top < viewportHeight &&
+        rect.left < viewportWidth
+      );
+    }
+
+    /**
+     * Update predictor based on which action button is visible in viewport.
+     * @returns {void}
+     * side-effects: reads DOM, updates globals/DOM
+     */
+    function updatePredictorFromScroll() {
+      if (g_roundLocked) {
+        return;
+      }
+      const btnOne = document.getElementById("btnOneBox");
+      const btnTwo = document.getElementById("btnTwoBox");
+      assert(btnOne instanceof HTMLButtonElement, "btnOneBox HTMLButtonElement", String(btnOne));
+      assert(btnTwo instanceof HTMLButtonElement, "btnTwoBox HTMLButtonElement", String(btnTwo));
+
+      const oneVisible = isElementVisible(btnOne);
+      const twoVisible = isElementVisible(btnTwo);
+
+      // Due to 120vh middle row, both should not be visible simultaneously. If neither is visible, keep last prediction.
+      if (oneVisible && !twoVisible) {
+        if (g_currentPrediction !== "one") {
+          setPredictorState("one");
+        }
+        return;
+      }
+      if (twoVisible && !oneVisible) {
+        if (g_currentPrediction !== "two") {
+          setPredictorState("two");
+        }
+        return;
+      }
+      // If both visible (unlikely) or neither visible, do not change prediction.
+    }
+
+    /**
+     * Award only Envelope A (one-box choice).
+     * @returns {void}
+     * side-effects: updates globals, updates DOM, disables buttons
+     */
+    function awardOneBox() {
+      if (g_roundLocked) {
+        return;
+      }
+      const [amountA] = g_envelopeAmounts;
+      assert(Number.isFinite(amountA), "amountA finite", String(amountA));
+      g_score += amountA;
+      g_roundLocked = true;
+      renderScore();
+      setButtonsDisabled(true);
+    }
+
+    /**
+     * Award both envelopes (two-box choice).
+     * @returns {void}
+     * side-effects: updates globals, updates DOM, disables buttons
+     */
+    function awardTwoBox() {
+      if (g_roundLocked) {
+        return;
+      }
+      const [amountA, amountB] = g_envelopeAmounts;
+      assert(Number.isFinite(amountA), "amountA finite", String(amountA));
+      assert(Number.isFinite(amountB), "amountB finite", String(amountB));
+      g_score += amountA + amountB;
+      g_roundLocked = true;
+      renderScore();
+      setButtonsDisabled(true);
+    }
+
+    /**
+     * Enable or disable action buttons for the round.
+     * @param {boolean} disabled - Whether to disable the choice buttons.
+     * @returns {void}
+     * side-effects: updates DOM disabled attribute
+     */
+    function setButtonsDisabled(disabled) {
+      const buttonOne = document.getElementById("btnOneBox");
+      const buttonTwo = document.getElementById("btnTwoBox");
+      assert(buttonOne instanceof HTMLButtonElement, "btnOneBox HTMLButtonElement", String(buttonOne));
+      assert(buttonTwo instanceof HTMLButtonElement, "btnTwoBox HTMLButtonElement", String(buttonTwo));
+      buttonOne.disabled = disabled;
+      buttonTwo.disabled = disabled;
+    }
+
+    /**
+     * Start a new round. Predictor follows current visibility on screen.
+     * @returns {void}
+     * side-effects: updates globals and DOM, enables buttons
+     */
+    function resetRound() {
+      g_roundLocked = false;
+      g_currentPrediction = null;
+      setButtonsDisabled(false);
+      updatePredictorFromScroll();
+    }
+
+    // Initialize
+    (function init() {
+      // Loop invariants: elements are queried exactly once; handlers do not stack.
+      const btnOne = document.getElementById("btnOneBox");
+      const btnTwo = document.getElementById("btnTwoBox");
+      const btnNext = document.getElementById("btnNext");
+      assert(btnOne instanceof HTMLButtonElement, "btnOneBox HTMLButtonElement", String(btnOne));
+      assert(btnTwo instanceof HTMLButtonElement, "btnTwoBox HTMLButtonElement", String(btnTwo));
+      assert(btnNext instanceof HTMLButtonElement, "btnNext HTMLButtonElement", String(btnNext));
+
+      // Click collects
+      btnOne.addEventListener("click", function handleClickOne() { awardOneBox(); });
+      btnTwo.addEventListener("click", function handleClickTwo() { awardTwoBox(); });
+
+      // Next round
+      btnNext.addEventListener("click", function handleClickNext() { resetRound(); });
+
+      // Scroll/resize change predictor
+      window.addEventListener("scroll", function handleScroll() { updatePredictorFromScroll(); }, { passive: true });
+      window.addEventListener("resize", function handleResize() { updatePredictorFromScroll(); });
+
+      // Initial state: set predictor based on initial visibility
+      updatePredictorFromScroll();
+      renderScore();
+      renderEnvelopeAmounts();
+    })();
+  </script>
+</body>
+</html>
+
